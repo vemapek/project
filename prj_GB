@@ -7,19 +7,25 @@
 
 #define WIDTH   30
 #define HEIGHT  10
-#define N_PLUS  5
-#define N_MINUS 5
 
 //#define WIDTH   10
 //#define HEIGHT  7
 //#define N_PLUS  15
 //#define N_MINUS 15
 
+
+// 배열 등을 함수에 전달하는 것도 좋지만 이 경우는 전역 변수로 두면 가독성도 높고 작성하기도 편하다.
+// You can deliver array('board') through function parameters. 
+// However, in this case, it's much readable to define 'board' and the other variables as global variables.
 char board[HEIGHT][WIDTH];
 
+// 지렁이 현재 위치
+// the current position of the worm
 int x;
 int y;
 
+// 현재 방향(worm_x, worm_y의 증가/감소량)
+// the current direction. i.e. increment/decrement values for 'worm_x' and 'worm_y'
 int dx;
 int dy;
 
@@ -29,6 +35,8 @@ void turn();
 void move();
 
 
+
+// 게임판과 지렁이 초기화 initialize game baord & earthworm
 void initialize(int start_x, int start_y) {
     // 위, 아래 가로벽 horizontal walls
     for (int i = 0; i < WIDTH; i++) {
@@ -41,7 +49,6 @@ void initialize(int start_x, int start_y) {
             board[i][j] = ' ';
         }
     }
-    //결승선
     for (int i = 0; i < HEIGHT; i++) {
         board[i][0] = board[i][WIDTH - 8] = '#';
     }
@@ -89,8 +96,20 @@ int main(void)
         move();
         system("cls");
         display();
-        Sleep(500);
+        Sleep(100);  //숫자 작으면 빨라짐
+        if (y == 23) {
+            break;
+        }
     }
+    printf("\n\n\n");
+    printf("끝");
+   /* srand((unsigned int)time(NULL));
+     initialize(1, 1);
+    while (2) {
+        move();
+        system("cls");
+        display();
+        Sleep(100);  //숫자 작으면 빨라짐
+    }*/
     return 0;
 }
-
