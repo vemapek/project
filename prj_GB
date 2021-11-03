@@ -76,6 +76,23 @@ void move() {
 
 int main(void)
 {
+    /*
+    printf("경주할 거북이의 마릿수(최대 10)를 입력하고 Enter>");
+     scanf("%d", &tuetle_num);
+
+   printf("%d개 거북이의 이름(최대 한글 3자)을 입력하고 Enter하세요.\n", tuetle_num);
+     printf("\n");
+     for (i = 0; i < tuetle_num; i++)
+     {
+         printf("%d번 거북이 이름 :", i + 1);
+         fflush(stdin);
+         scanf("%s", turtle_name[i]);
+     }
+
+    */
+
+    printf("거북이 레이싱 게임\n\n");
+
     srand((unsigned int)time(NULL));
 
     initialize(1, 1);
@@ -88,7 +105,7 @@ int main(void)
             break;
         }
     }
-
+    printf("게임 종료\n\n");
 
     return 0;
 }
