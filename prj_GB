@@ -1,111 +1,108 @@
-#include<stdio.h>
-#include <Windows.h>
-#include <stdbool.h>
-#include <limits.h>
+#define _CRT_SECURE_NO_WARNINGS
+
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#define WIDTH   45
-#define HEIGHT  10
-
-
-char board[HEIGHT][WIDTH];
-
-
-int x;
-int y;
-
-int dx;
-int dy;
-
-void initialize(int, int);
-void display();
-void turn();
-void move();
-
-
-
-
-void initialize(int start_x, int start_y) {
-
-    for (int i = 0; i < WIDTH; i++) {
-        board[0][i] = board[HEIGHT - 1][i] = '=';
-    }
-
-
-    for (int i = 1; i < HEIGHT - 1; i++) {
-        for (int j = 1; j < WIDTH - 1; j++) {
-            board[i][j] = ' ';
-        }
-    }
-
-    for (int i = 0; i < HEIGHT; i++) {
-        board[i][0] = board[i][WIDTH - 8] = ' ';
-    }
-
-    for (int i = 0; i < HEIGHT; i++) {
-        board[i][0] = board[i][WIDTH - 1] = ' ';
-    }
-
-    x = start_x;
-    y = start_y;
-    dx = 0;
-    dy = 1;
-    board[x][y] = '>';
-
-
-}
-
-
-void display() {
-
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            printf("%c", board[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-void move() {
-    board[x][y] = ' ';
-    x += dx;
-    y += dy;
-    board[x][y] = '>';
-}
+#include <windows.h>
+void gotoxy(int x, int y);
 
 int main(void)
 {
-    /*
-    printf("경주할 거북이의 마릿수(최대 10)를 입력하고 Enter>");
-     scanf("%d", &tuetle_num);
+    int tuetle_num, i, number, k, max = 0, count = 0, rank[10] = { 0 };
+    int turtle[10] = { 0 }, race;
+    char turtle_name[10][10];
+    clock_t start, end;
+    double pst;
+    srand(time(NULL));
 
-   printf("%d개 거북이의 이름(최대 한글 3자)을 입력하고 Enter하세요.\n", tuetle_num);
-     printf("\n");
-     for (i = 0; i < tuetle_num; i++)
-     {
-         printf("%d번 거북이 이름 :", i + 1);
-         fflush(stdin);
-         scanf("%s", turtle_name[i]);
-     }
-
-    */
-
-    printf("거북이 레이싱 게임\n\n");
-
-    srand((unsigned int)time(NULL));
-
-    initialize(1, 1);
-    while (1) {
-        move();
-        system("cls");
-        display();
-        Sleep(100);
-        if (y == 40) {
-            break;
+    printf("거북이 레이싱게임\n\n");
+    printf("레이싱할 거북이의 마릿수(최대 10)를 입력하고 Enter>");
+    scanf("%d", &tuetle_num);
+    printf("\n\n");
+    if (tuetle_num <= 10)                     //11마리 이상 입력시 게임종료. 마릿수 11마리 이상 입력은 가능하지만 게임 진행속도를 위해 10마리까지만 작동하게 함
+    {
+        for (i = 0; i < tuetle_num; i++)
+        {
+            printf("%d번 거북이 이름 :", i + 1);
+            fflush(stdin);
+            scanf("%s", turtle_name[i]);
         }
     }
-    printf("게임 종료\n\n");
+    else
+    {
+        printf("범위를 벗어났습니다\n");
+        return 0;
+    }
+    printf("%d개 거북이의 이름(최대 한글 3자)을 입력하고 Enter>\n", tuetle_num); //한글 4자 이상 입력은 가능하지만 게임 진행을 위해 제한해둠
+    printf("\n");
 
+    //맵
+    system("cls");
+    printf("\n\n");
+    printf("(start)  1cm       10cm      20cm      30cm      40cm(end)등수 시간(초)\n");
+    printf("----------------------------------------------------------------------\n");
+    gotoxy(52, 1);
+    printf("소요시간:");
+    for (i = 0; i < tuetle_num; i++)
+    {
+        gotoxy(1, 5 + i * 2);
+        printf("%-8s:>", turtle_name[i]);
+    }
+
+
+    start = clock();
+    while (count != tuetle_num)
+    {
+
+        number = rand() % tuetle_num;
+        if (rank[number] != 0)
+            continue;
+        race = rand() % 2 + 1;
+        turtle[number] = turtle[number] + race;
+        Sleep(200);
+        if (turtle[number] > 39)
+        {
+            turtle[number] = 40;
+            if (!rank[number])
+            {
+                count++;
+                rank[number] = count;
+                gotoxy(10, 5 + number * 2);
+                for (k = 0; k < turtle[number]; k++)
+                    printf(" ");
+                if (turtle[number])
+                    printf(">%d", turtle[number]);
+                gotoxy(55, 5 + number * 2);
+                printf("   %d등    ", count);
+                end = clock();
+                pst = (double)(end - start) / CLK_TCK;
+                printf("%6.3f", pst);
+
+            }
+        }
+        else
+        {
+            gotoxy(10, 5 + number * 2);
+            for (k = 0; k < turtle[number]; k++)
+                printf(" ");
+            if (turtle[number])
+                printf(">%d", turtle[number]);
+        }
+        gotoxy(62, 1);
+        end = clock();
+        pst = (double)(end - start) / CLK_TCK;
+        printf("%6.3f초", pst);
+
+    }
+    gotoxy(1, 20);
+    printf("\n\n\n\n\n\n\n");
+    printf("게임 종료!\n");
     return 0;
+}
+
+void gotoxy(int x, int y)
+{
+    COORD Pos = { x - 1, y - 1 };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
